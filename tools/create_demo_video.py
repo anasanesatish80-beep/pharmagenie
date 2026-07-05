@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import html
 import subprocess
 import wave
 from dataclasses import dataclass
@@ -41,10 +40,10 @@ def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
-FONT_TITLE = load_font(74, bold=True)
-FONT_SUBTITLE = load_font(34)
-FONT_SECTION = load_font(30, bold=True)
-FONT_BODY = load_font(27)
+FONT_TITLE = load_font(66, bold=True)
+FONT_SUBTITLE = load_font(31)
+FONT_SECTION = load_font(25, bold=True)
+FONT_BODY = load_font(24)
 FONT_SMALL = load_font(21)
 
 
@@ -85,8 +84,8 @@ def draw_background(draw: ImageDraw.ImageDraw, accent: tuple[int, int, int]) -> 
 
 def draw_header(draw: ImageDraw.ImageDraw, scene: Scene) -> None:
     draw.text((72, 54), "PharmaGenie", fill=(235, 250, 255), font=FONT_TITLE)
-    draw.text((76, 137), "AI Multi-Agent Drug Discovery Workbench", fill=(155, 238, 255), font=FONT_SUBTITLE)
-    draw.line((76, 190, 655, 190), fill=scene.accent, width=4)
+    draw.text((76, 130), "AI Multi-Agent Drug Discovery Research System", fill=(155, 238, 255), font=FONT_SUBTITLE)
+    draw.line((76, 182, 655, 182), fill=scene.accent, width=4)
 
 
 def wrap(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
@@ -112,8 +111,8 @@ def draw_bullets(draw: ImageDraw.ImageDraw, x: int, y: int, bullets: list[str], 
         draw.ellipse((x, y + 10, x + 12, y + 22), fill=(100, 245, 210))
         for line in wrap(draw, bullet, FONT_BODY, max_width):
             draw.text((x + 34, y), line, fill=(223, 241, 246), font=FONT_BODY)
-            y += 38
-        y += 20
+            y += 34
+        y += 18
     return y
 
 
@@ -132,29 +131,92 @@ def paste_screenshot(base: Image.Image, screenshot_name: str, box: tuple[int, in
 def draw_architecture(draw: ImageDraw.ImageDraw, x: int, y: int, accent: tuple[int, int, int]) -> None:
     boxes = [
         ("Streamlit UI", x, y),
-        ("FastAPI", x + 390, y),
-        ("Coordinator", x + 780, y),
-        ("Planner", x + 780, y + 190),
-        ("ADK Agents", x + 390, y + 380),
-        ("MCP Tools", x + 780, y + 380),
-        ("PubMed | UniProt | PubChem | Trials", x, y + 570),
-        ("Gemini 2.5 Flash synthesis", x + 780, y + 570),
+        ("FastAPI backend", x + 360, y),
+        ("Coordinator agent", x + 720, y),
+        ("Planner agent", x + 720, y + 145),
+        ("ADK specialist agents", x + 360, y + 290),
+        ("MCP tool layer", x + 720, y + 290),
+        ("PubMed UniProt PubChem Trials", x, y + 435),
+        ("Gemini synthesis and report", x + 720, y + 435),
     ]
     for label, bx, by in boxes:
-        rounded_rect(draw, (bx, by, bx + 310, by + 96), fill=(10, 34, 52), outline=accent)
-        draw.text((bx + 24, by + 28), label, fill=(238, 252, 255), font=FONT_SECTION)
+        box = (bx, by, bx + 300, by + 112)
+        rounded_rect(draw, box, fill=(10, 34, 52), outline=accent)
+        lines = wrap(draw, label, FONT_SECTION, 242)
+        text_y = by + max(20, (112 - len(lines) * 31) // 2)
+        for line in lines[:3]:
+            draw.text((bx + 24, text_y), line, fill=(238, 252, 255), font=FONT_SECTION)
+            text_y += 31
 
     for start, end in [
-        ((x + 310, y + 48), (x + 390, y + 48)),
-        ((x + 700, y + 48), (x + 780, y + 48)),
-        ((x + 935, y + 96), (x + 935, y + 190)),
-        ((x + 780, y + 238), (x + 700, y + 428)),
-        ((x + 700, y + 428), (x + 780, y + 428)),
-        ((x + 935, y + 476), (x + 935, y + 570)),
-        ((x + 310, y + 618), (x + 780, y + 428)),
+        ((x + 300, y + 56), (x + 360, y + 56)),
+        ((x + 660, y + 56), (x + 720, y + 56)),
+        ((x + 870, y + 112), (x + 870, y + 145)),
+        ((x + 720, y + 201), (x + 660, y + 346)),
+        ((x + 660, y + 346), (x + 720, y + 346)),
+        ((x + 870, y + 402), (x + 870, y + 435)),
+        ((x + 300, y + 491), (x + 720, y + 346)),
     ]:
         draw.line((start, end), fill=(120, 245, 220), width=4)
         draw.ellipse((end[0] - 6, end[1] - 6, end[0] + 6, end[1] + 6), fill=(120, 245, 220))
+
+
+def draw_codebase(draw: ImageDraw.ImageDraw) -> None:
+    rounded_rect(draw, (104, 418, 1816, 914), fill=(8, 24, 38), outline=(93, 196, 230))
+    columns = [
+        (
+            150,
+            468,
+            "Agent layer",
+            [
+                "app/agent.py",
+                "CoordinatorAgent",
+                "PlannerAgent",
+                "LiteratureAgent",
+                "ProteinAgent",
+                "CompoundAgent",
+                "ClinicalTrialAgent",
+                "EvidenceRankingAgent",
+                "ReportAgent",
+            ],
+        ),
+        (
+            630,
+            468,
+            "Tool and data layer",
+            [
+                "mcp_servers/adk_tools.py",
+                "pubmed_server.py",
+                "uniprot_server.py",
+                "pubchem_server.py",
+                "clinical_trials_server.py",
+                "sources/pubmed.py",
+                "sources/uniprot.py",
+                "sources/pubchem.py",
+            ],
+        ),
+        (
+            1110,
+            468,
+            "Product layer",
+            [
+                "api/main.py",
+                "ui/streamlit_app.py",
+                "ai/synthesis.py",
+                "safety.py",
+                "reports/",
+                "tests/",
+                "Dockerfile",
+                ".github/workflows/",
+            ],
+        ),
+    ]
+    for x, y, heading, rows in columns:
+        draw.text((x, y), heading, fill=(120, 245, 220), font=FONT_SECTION)
+        y += 54
+        for row in rows:
+            draw.text((x, y), row, fill=(225, 240, 245), font=FONT_BODY)
+            y += 42
 
 
 def render_scene(scene: Scene, index: int) -> Path:
@@ -163,23 +225,25 @@ def render_scene(scene: Scene, index: int) -> Path:
     draw_background(draw, scene.accent)
     draw_header(draw, scene)
 
-    draw.text((76, 235), scene.title, fill=(255, 255, 255), font=FONT_TITLE)
-    for i, line in enumerate(wrap(draw, scene.subtitle, FONT_SUBTITLE, 900)):
-        draw.text((80, 324 + i * 44), line, fill=(178, 211, 222), font=FONT_SUBTITLE)
+    draw.text((76, 228), scene.title, fill=(255, 255, 255), font=FONT_TITLE)
+    for i, line in enumerate(wrap(draw, scene.subtitle, FONT_SUBTITLE, 1020)):
+        draw.text((80, 308 + i * 40), line, fill=(178, 211, 222), font=FONT_SUBTITLE)
 
     if scene.screenshot:
-        draw_bullets(draw, 88, 430, scene.bullets, 650)
-        paste_screenshot(image, scene.screenshot, (820, 250, 1818, 960))
+        draw_bullets(draw, 88, 424, scene.bullets, 590)
+        paste_screenshot(image, scene.screenshot, (760, 238, 1824, 948))
     elif "architecture" in scene.title.lower():
-        draw_bullets(draw, 88, 430, scene.bullets, 600)
-        draw_architecture(draw, 650, 315, scene.accent)
+        draw_bullets(draw, 88, 424, scene.bullets, 560)
+        draw_architecture(draw, 680, 390, scene.accent)
+    elif "codebase" in scene.title.lower():
+        draw_codebase(draw)
     else:
         rounded_rect(draw, (82, 430, 1838, 920), fill=(9, 28, 44), outline=(45, 128, 155))
         draw_bullets(draw, 126, 486, scene.bullets, 1600)
 
     draw.text(
         (76, 1006),
-        "Kaggle Capstone | Agents for Good | Google ADK + MCP + Gemini",
+        "PharmaGenie | Google ADK multi-agent workflow | MCP tools | Gemini synthesis",
         fill=(140, 180, 194),
         font=FONT_SMALL,
     )
@@ -190,15 +254,28 @@ def render_scene(scene: Scene, index: int) -> Path:
 
 
 def generate_tts(text: str, output: Path) -> None:
-    escaped = html.escape(text, quote=True)
+    escaped = (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&apos;")
+    )
+    ssml = f"""<speak version='1.0' xml:lang='en-US'>
+<voice gender='female'>
+<prosody rate='-7%' pitch='+2st'>{escaped}</prosody>
+</voice>
+</speak>"""
     script = f"""
 Add-Type -AssemblyName System.Speech
 $synth = New-Object System.Speech.Synthesis.SpeechSynthesizer
 $synth.SelectVoice('Microsoft Zira Desktop')
-$synth.Rate = 0
+$synth.Rate = -1
 $synth.Volume = 100
 $synth.SetOutputToWaveFile('{output}')
-$synth.Speak('{escaped}')
+$synth.SpeakSsml(@'
+{ssml}
+'@)
 $synth.Dispose()
 """
     subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script], check=True, cwd=ROOT)
@@ -255,50 +332,56 @@ def main() -> None:
 
     scenes = [
         Scene(
-            title="Architecture first",
-            subtitle="Google ADK multi-agent system for evidence-grounded early drug discovery hypotheses.",
+            title="What I built",
+            subtitle="A biomedical research system that turns a disease question into ranked in-silico discovery hypotheses.",
             bullets=[
-                "Streamlit collects disease and research goal inputs and visualizes agent progress.",
-                "FastAPI exposes health, research, and discovery endpoints for demos and deployment.",
-                "ADK agents coordinate planning, literature, protein, compound, clinical trial, ranking, and reporting work.",
-                "MCP-style tools connect agents to PubMed, UniProt, PubChem, ClinicalTrials.gov, and report generation.",
+                "The user enters a disease area and a research goal.",
+                "Specialized agents gather literature, protein, compound, and clinical trial evidence.",
+                "The system ranks early target and candidate ideas for lab follow-up.",
+                "Every result is presented as a research hypothesis, not as medical advice.",
             ],
-            narration="First, the architecture. PharmaGenie is an AI driven biomedical discovery workbench. The Streamlit interface sends a disease and research goal to FastAPI. A coordinator and planner route the task across Google ADK agents. Those agents call MCP style tools for PubMed, UniProt, PubChem, Clinical Trials dot gov, and report generation. Gemini synthesizes the evidence into ranked, validation ready hypotheses.",
+            narration="Hi, this is PharmaGenie. I built it as an AI driven drug discovery research system. The idea is simple: a researcher gives it a disease area and a goal, and the application gathers biomedical evidence, reasons across that evidence with multiple agents, and returns ranked in silico hypotheses that could be explored further in the lab. It is not a treatment tool, and it does not claim a drug is validated. It is meant to speed up early research triage.",
+        ),
+        Scene(
+            title="System architecture",
+            subtitle="The application is split into a user interface, an API, an agent workflow, and trusted biomedical data tools.",
+            bullets=[
+                "Streamlit provides the research console and live workflow view.",
+                "FastAPI exposes the backend workflow through clean REST endpoints.",
+                "Google ADK coordinates the agent graph.",
+                "MCP-style tools connect the agents to scientific sources and report generation.",
+            ],
+            narration="Here is the architecture. The Streamlit interface is the research console. It talks to a FastAPI backend, and the backend starts the agent workflow. A coordinator agent accepts the task. A planner agent breaks it into smaller research jobs. Then the specialist agents work on literature, proteins, compounds, clinical trials, evidence ranking, and the final report. The tool layer is separated behind MCP style boundaries, so source access is explicit and testable.",
+            accent=(120, 245, 210),
         ),
         Scene(
             title="Codebase walkthrough",
-            subtitle="Modular agents, secure services, tests, documentation, and deployment assets.",
-            bullets=[
-                "app/agent.py defines the ADK root agent and sub-agent graph.",
-                "src/pharmagenie/agents contains independently testable domain agents.",
-                "src/pharmagenie/mcp_servers exposes tool functions and MCP server entry points.",
-                "src/pharmagenie/sources contains source clients with graceful fallbacks.",
-                "tests, Docker, GitHub Actions, and docs support the Kaggle submission story.",
-            ],
-            narration="Next, the codebase. The app folder contains the Google ADK entry point with the root agent. The agents package keeps each biomedical role modular and independently testable. MCP server modules expose the tool layer. Source clients handle PubMed, UniProt, PubChem, and Clinical Trials. The project also includes tests, Docker, GitHub Actions, documentation, screenshots, and Kaggle deliverables.",
+            subtitle="The project is organized so each agent, tool, source client, and product surface can be tested separately.",
+            bullets=[],
+            narration="The codebase follows the same structure as the architecture. The app folder contains the Google ADK root agent. The agents package contains the individual research roles. The MCP server package exposes the tool functions. The sources package contains the PubMed, UniProt, PubChem, and Clinical Trials clients. The product layer contains FastAPI, Streamlit, Gemini synthesis, report generation, safety checks, tests, Docker, and GitHub Actions. I kept these pieces separate so the system is easier to debug and extend.",
             accent=(120, 245, 210),
         ),
         Scene(
             title="End-to-end demo input",
-            subtitle="Researchers begin with a disease area and a specific research objective.",
+            subtitle="The first screen asks for the disease and the research objective, then starts the agent run.",
             bullets=[
-                "The UI asks for the disease and discovery goal directly on the first screen.",
-                "Preset examples make it fast to demonstrate oncology, neurology, or rare disease workflows.",
-                "The interface uses a science-fiction console style while keeping the workflow practical.",
+                "Disease and goal fields are visible immediately.",
+                "Example presets make the demo easy to repeat.",
+                "The interface is styled like a biomedical command console.",
             ],
-            narration="Now the end to end demo. The researcher starts in the Streamlit interface, enters a disease, and describes the research goal. The goal can be target discovery, candidate prioritization, or evidence synthesis. Preset examples help during the five minute presentation, but the same screen accepts custom biomedical questions.",
+            narration="Now I will walk through the user experience. On the first screen, the researcher enters the disease and the research objective. The examples are there to make the demo repeatable, but the same fields accept custom questions. The UI is intentionally more like a scientific command console than a generic form, because the product is meant for research work.",
             screenshot="01-streamlit-input-console.png",
             accent=(90, 205, 255),
         ),
         Scene(
             title="Agents executing live",
-            subtitle="The UI shows the multi-agent workflow progressing instead of hiding the pipeline.",
+            subtitle="The application shows the workflow stages while the agents run.",
             bullets=[
-                "Coordinator validates the request and starts the run.",
-                "Planner decomposes the task across specialized agents.",
-                "Literature, Protein, Compound, Clinical Trial, Ranking, and Report agents run as visible stages.",
+                "Coordinator validates the request.",
+                "Planner splits the research task.",
+                "Specialist agents collect evidence and prepare the dossier.",
             ],
-            narration="When the run starts, the app shows the agent swarm in motion. The coordinator validates the request. The planner decomposes it. Literature, protein, compound, clinical trial, evidence ranking, and report agents execute as visible stages, so judges can see that this is an agentic workflow and not a single hidden prompt.",
+            narration="When the run starts, the application shows the agents as active stages. This is useful during a demo, but it is also useful for real users because they can understand what the system is doing. The workflow starts with validation and planning, then moves through evidence collection, compound and target reasoning, clinical trial context, ranking, and report generation.",
             screenshot="02-agent-swarm-running.png",
             accent=(180, 135, 255),
         ),
@@ -306,36 +389,37 @@ def main() -> None:
             title="Discovery hypotheses",
             subtitle="A ranked dossier of target and compound hypotheses with evidence and risk notes.",
             bullets=[
-                "Outputs are framed as in-silico hypotheses requiring lab validation.",
-                "Evidence ranking combines literature, target biology, compound data, and trial context.",
-                "Markdown and PDF downloads make the final dossier shareable.",
+                "Each item is an early research hypothesis.",
+                "The dossier shows evidence, confidence, and limitations.",
+                "Markdown and PDF downloads make the report easy to share.",
             ],
-            narration="The result is a research dossier, not a medical recommendation. PharmaGenie ranks target and compound hypotheses, explains the supporting evidence, and flags limitations. The output is designed for early stage research triage, with markdown and PDF download options for sharing the dossier.",
+            narration="The output is a ranked discovery dossier. PharmaGenie explains the target or candidate idea, summarizes the supporting evidence, and calls out risks or gaps. The wording is careful on purpose: these are in silico hypotheses for research prioritization. A scientist would still need experimental validation before treating any result as real discovery.",
             screenshot="03-discovery-hypotheses.png",
             accent=(100, 245, 210),
         ),
         Scene(
             title="Backend and deployability",
-            subtitle="FastAPI, Docker, and Cloud Run compatible settings make the system easy to review.",
+            subtitle="The backend is exposed through FastAPI and can be run locally or packaged for cloud deployment.",
             bullets=[
                 "The FastAPI docs expose /health, /research, and /discover.",
-                "Environment variables keep secrets out of the codebase.",
-                "Docker and docker-compose support repeatable local and cloud execution.",
+                "Secrets are loaded from environment variables.",
+                "Docker and docker-compose support repeatable execution.",
+                "The same service shape can be deployed to Cloud Run.",
             ],
-            narration="The backend is also demo ready. FastAPI exposes health, research, and discovery endpoints through interactive docs. Secrets are loaded from environment variables. Docker and docker compose make the app portable, and the structure is compatible with a Cloud Run deployment story.",
+            narration="The backend is built as a FastAPI service. The interactive docs expose the health, research, and discovery endpoints. API keys and configuration come from environment variables, not hard coded files. Docker and docker compose make the app repeatable locally, and the same pattern can be moved to Cloud Run for a hosted version.",
             screenshot="04-fastapi-docs.png",
             accent=(255, 205, 95),
         ),
         Scene(
-            title="Why it fits the capstone",
-            subtitle="Value, architecture, communication, and responsible agent use.",
+            title="Responsible discovery workflow",
+            subtitle="The goal is faster biomedical research triage, with safety controls around how the system accepts and presents information.",
             bullets=[
-                "Track: Agents for Good, focused on biomedical researchers.",
-                "Core concepts: Google ADK agents, tool calling, MCP servers, evaluation assets, and structured logging.",
-                "Deliverables: public codebase, Kaggle writeup, demo script, screenshots, deployment guide, and narrated video.",
-                "Safety: injection checks, input validation, secure logging, and validation disclaimers.",
+                "Prompt injection and unsafe medical advice requests are screened.",
+                "Source text is treated as evidence, not as instructions.",
+                "Logs avoid secrets and sensitive values.",
+                "Reports clearly mark outputs as hypotheses requiring validation.",
             ],
-            narration="Finally, this fits the Kaggle capstone rubric. The problem is meaningful. The solution uses Google ADK agents, MCP style tools, structured logging, evaluation assets, Docker, and documentation. The demo communicates the architecture clearly, then shows the codebase, then proves the end to end workflow. PharmaGenie is an AI driven drug discovery assistant focused on responsible, evidence grounded research acceleration.",
+            narration="The last piece is safety. Biomedical tools need careful boundaries. PharmaGenie screens prompt injection, blocks patient specific medical advice, treats source text as evidence rather than instructions, and avoids logging secrets. The final report is useful because it gives researchers a structured starting point, while still making it clear that laboratory validation is required.",
             accent=(90, 205, 255),
         ),
     ]
