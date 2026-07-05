@@ -14,7 +14,9 @@ hypotheses.
 ## 1:30 - Architecture
 
 Show the Mermaid diagram in the README. Explain Coordinator, Planner, four
-domain agents, Evidence Ranking Agent, Report Agent, and MCP tool boundaries.
+domain agents, Evidence Ranking Agent, Target Discovery Agent, Candidate
+Prioritization Agent, Report Agent, Google ADK definitions, and MCP tool
+boundaries.
 
 ## 2:30 - Demo Query
 
@@ -23,14 +25,16 @@ and candidate hypotheses from biomedical evidence.`
 
 ## 3:30 - Safety
 
-Show limitations: not medical advice, not drug discovery, no efficacy claims,
-prompt injection screening, environment-based secrets, safe report handling.
+Show limitations: in silico hypotheses only, not medical advice, no efficacy or
+safety validation claims, prompt injection screening, environment-based secrets,
+and safe report handling.
 
 ## 4:15 - Engineering Quality
 
-Show tests, Dockerfile, GitHub Actions, docs, and Cloud Run compatibility.
+Show tests, Dockerfile, GitHub Actions, FastAPI docs, ADK/MCP code, evaluation
+starter files, and Cloud Run compatibility.
 
 ## 4:45 - Future Work
 
-Replace placeholder clients with live source APIs, register MCP servers, add
-Agents CLI behavioral evals, and deploy to Cloud Run.
+Run official Agents CLI evals, expand disease-specific benchmark cases, deploy
+to Cloud Run, and add richer molecular scoring models.

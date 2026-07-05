@@ -1,9 +1,19 @@
-# Screenshot Placeholders
+# Screenshots
 
-Add final demo screenshots here before Kaggle submission.
+Captured local demo screenshots for the Kaggle submission.
 
-- `screenshots/01-streamlit-input.png`: disease and research goal form
-- `screenshots/02-agent-progress.png`: multi-agent execution progress
-- `screenshots/03-dossier-output.png`: final research dossier
-- `screenshots/04-api-docs.png`: FastAPI OpenAPI page
-- `screenshots/05-tests.png`: pytest/CI output
+## Streamlit Discovery Console
+
+![Streamlit discovery console](screenshots/01-streamlit-input-console.png)
+
+## Agent Swarm Running
+
+![Agent swarm running](screenshots/02-agent-swarm-running.png)
+
+## Discovery Hypotheses
+
+![Discovery hypotheses](screenshots/03-discovery-hypotheses.png)
+
+## FastAPI Docs
+
+![FastAPI docs](screenshots/04-fastapi-docs.png)

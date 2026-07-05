@@ -83,6 +83,12 @@ streamlit run src/pharmagenie/ui/streamlit_app.py
 - Disease: `glioblastoma`
 - Research goal: `Generate and prioritize in silico target and candidate hypotheses from biomedical evidence.`
 
+## Demo Screenshots
+
+![PharmaGenie discovery console](docs/screenshots/01-streamlit-input-console.png)
+
+More screenshots are available in [docs/screenshots.md](docs/screenshots.md).
+
 ## Safety
 
 PharmaGenie rejects or redirects requests for patient-specific medical advice,
@@ -101,3 +107,10 @@ Retrieved source text is treated as untrusted evidence, not instructions.
 
 Starter Agents CLI eval files live in [tests/eval](tests/eval). See
 [docs/evaluation.md](docs/evaluation.md) for commands.
+
+## Kaggle Submission
+
+Use [docs/kaggle_writeup.md](docs/kaggle_writeup.md),
+[docs/demo_script.md](docs/demo_script.md), and
+[docs/submission_checklist.md](docs/submission_checklist.md) for the final
+submission package.
