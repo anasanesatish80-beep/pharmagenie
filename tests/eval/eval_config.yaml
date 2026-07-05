@@ -1,0 +1,22 @@
+metrics_to_run:
+  - final_response_quality
+  - hallucination
+  - safety
+  - discovery_output_contract
+
+custom_metrics:
+  - name: discovery_output_contract
+    custom_function: |
+      def evaluate(instance):
+          text_parts = (instance.get("response") or {}).get("parts", [])
+          response_text = "\n".join(part.get("text", "") for part in text_parts)
+          required = [
+              "hypothesis",
+              "evidence",
+              "experimental validation",
+          ]
+          score = sum(1 for token in required if token.lower() in response_text.lower()) / len(required)
+          return {
+              "score": score,
+              "explanation": "Checks that the final response is framed as evidence-linked in silico hypotheses requiring validation.",
+          }
