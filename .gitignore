@@ -27,6 +27,10 @@ dist/
 outputs/
 reports/generated/
 *.pdf
+docs/demo_video/audio/
+docs/demo_video/clips/
+docs/demo_video/frames/
+docs/demo_video/concat.txt
 
 # IDE
 .idea/

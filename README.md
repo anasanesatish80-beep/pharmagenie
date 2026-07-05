@@ -89,6 +89,17 @@ streamlit run src/pharmagenie/ui/streamlit_app.py
 
 More screenshots are available in [docs/screenshots.md](docs/screenshots.md).
 
+## Demo Video
+
+The narrated Kaggle demo video is available at
+[docs/demo_video/pharmagenie_kaggle_demo.mp4](docs/demo_video/pharmagenie_kaggle_demo.mp4).
+
+To rebuild it locally:
+
+```powershell
+.\.venv\Scripts\python.exe tools\create_demo_video.py
+```
+
 ## Safety
 
 PharmaGenie rejects or redirects requests for patient-specific medical advice,
@@ -100,8 +111,7 @@ Retrieved source text is treated as untrusted evidence, not instructions.
 
 1. Install uv and agents-cli locally if you want to run official ADK evals.
 2. Add a `GOOGLE_API_KEY` to activate Gemini synthesis instead of deterministic fallback.
-3. Capture screenshots and demo video.
-4. Deploy the FastAPI service to Cloud Run.
+3. Deploy the FastAPI service to Cloud Run.
 
 ## Evaluation
 
@@ -113,4 +123,5 @@ Starter Agents CLI eval files live in [tests/eval](tests/eval). See
 Use [docs/kaggle_writeup.md](docs/kaggle_writeup.md),
 [docs/demo_script.md](docs/demo_script.md), and
 [docs/submission_checklist.md](docs/submission_checklist.md) for the final
-submission package.
+submission package. The demo video and screenshots are in `docs/demo_video`
+and `docs/screenshots`.
