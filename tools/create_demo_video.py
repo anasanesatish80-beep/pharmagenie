@@ -226,12 +226,12 @@ def render_scene(scene: Scene, index: int) -> Path:
     draw_header(draw, scene)
 
     draw.text((76, 228), scene.title, fill=(255, 255, 255), font=FONT_TITLE)
-    for i, line in enumerate(wrap(draw, scene.subtitle, FONT_SUBTITLE, 1020)):
+    subtitle_width = 1500 if scene.screenshot else 1020
+    for i, line in enumerate(wrap(draw, scene.subtitle, FONT_SUBTITLE, subtitle_width)):
         draw.text((80, 308 + i * 40), line, fill=(178, 211, 222), font=FONT_SUBTITLE)
 
     if scene.screenshot:
-        draw_bullets(draw, 88, 424, scene.bullets, 590)
-        paste_screenshot(image, scene.screenshot, (760, 238, 1824, 948))
+        paste_screenshot(image, scene.screenshot, (240, 380, 1680, 980))
     elif "architecture" in scene.title.lower():
         draw_bullets(draw, 88, 424, scene.bullets, 560)
         draw_architecture(draw, 680, 390, scene.accent)
@@ -241,12 +241,13 @@ def render_scene(scene: Scene, index: int) -> Path:
         rounded_rect(draw, (82, 430, 1838, 920), fill=(9, 28, 44), outline=(45, 128, 155))
         draw_bullets(draw, 126, 486, scene.bullets, 1600)
 
-    draw.text(
-        (76, 1006),
-        "PharmaGenie | Google ADK multi-agent workflow | MCP tools | Gemini synthesis",
-        fill=(140, 180, 194),
-        font=FONT_SMALL,
-    )
+    if not scene.screenshot:
+        draw.text(
+            (76, 1006),
+            "PharmaGenie | Google ADK multi-agent workflow | MCP tools | Gemini synthesis",
+            fill=(140, 180, 194),
+            font=FONT_SMALL,
+        )
     path = OUT_DIR / "frames" / f"scene_{index:02d}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path)
@@ -364,48 +365,55 @@ def main() -> None:
         Scene(
             title="End-to-end demo input",
             subtitle="The first screen asks for the disease and the research objective, then starts the agent run.",
-            bullets=[
-                "Disease and goal fields are visible immediately.",
-                "Example presets make the demo easy to repeat.",
-                "The interface is styled like a biomedical command console.",
-            ],
+            bullets=[],
             narration="Now I will walk through the user experience. On the first screen, the researcher enters the disease and the research objective. The examples are there to make the demo repeatable, but the same fields accept custom questions. The UI is intentionally more like a scientific command console than a generic form, because the product is meant for research work.",
             screenshot="01-streamlit-input-console.png",
             accent=(90, 205, 255),
         ),
         Scene(
+            title="Start the workflow",
+            subtitle="The Run Discovery Workflow button launches the agent system from the Streamlit console.",
+            bullets=[],
+            narration="After the disease and objective are set, the researcher presses Run Discovery Workflow. That button starts the backend workflow, sends the request through the API, and begins the agent sequence. In this demo the disease is glioblastoma, and the goal is to generate and prioritize in silico target and candidate hypotheses from biomedical evidence.",
+            screenshot="03-discovery-hypotheses.png",
+            accent=(90, 205, 255),
+        ),
+        Scene(
             title="Agents executing live",
             subtitle="The application shows the workflow stages while the agents run.",
-            bullets=[
-                "Coordinator validates the request.",
-                "Planner splits the research task.",
-                "Specialist agents collect evidence and prepare the dossier.",
-            ],
+            bullets=[],
             narration="When the run starts, the application shows the agents as active stages. This is useful during a demo, but it is also useful for real users because they can understand what the system is doing. The workflow starts with validation and planning, then moves through evidence collection, compound and target reasoning, clinical trial context, ranking, and report generation.",
             screenshot="02-agent-swarm-running.png",
             accent=(180, 135, 255),
         ),
         Scene(
-            title="Discovery hypotheses",
-            subtitle="A ranked dossier of target and compound hypotheses with evidence and risk notes.",
-            bullets=[
-                "Each item is an early research hypothesis.",
-                "The dossier shows evidence, confidence, and limitations.",
-                "Markdown and PDF downloads make the report easy to share.",
-            ],
-            narration="The output is a ranked discovery dossier. PharmaGenie explains the target or candidate idea, summarizes the supporting evidence, and calls out risks or gaps. The wording is careful on purpose: these are in silico hypotheses for research prioritization. A scientist would still need experimental validation before treating any result as real discovery.",
-            screenshot="03-discovery-hypotheses.png",
+            title="Ranked Discovery Hypotheses",
+            subtitle="The first output tab ranks target ideas and shows mechanism, confidence, rationale, and risk notes.",
+            bullets=[],
+            narration="When the workflow finishes, the first output is Ranked Discovery Hypotheses. Here PharmaGenie shows target hypotheses such as PTEN and NIPSNAP2, with scores, mechanism text, a candidate strategy, rationale, supporting source tags, and a risk note. This is the core discovery output: it gives a researcher a prioritized list of ideas to review.",
+            screenshot="05-ranked-discovery-hypotheses.png",
+            accent=(100, 245, 210),
+        ),
+        Scene(
+            title="Evidence Matrix",
+            subtitle="The second output tab keeps the evidence transparent across PubMed, UniProt, PubChem, and ClinicalTrials.gov.",
+            bullets=[],
+            narration="The Evidence Matrix tab shows where the system pulled evidence from and how confident each source signal is. This makes the output easier to inspect. Instead of only returning a polished summary, the app shows source, title, confidence, retrieval mode, URL, and summary context so a researcher can audit the dossier.",
+            screenshot="06-evidence-matrix.png",
+            accent=(100, 245, 210),
+        ),
+        Scene(
+            title="Research Dossier",
+            subtitle="The Dossier tab turns the agent output into a readable report with disease, goal, and Executive Summary.",
+            bullets=[],
+            narration="The Dossier tab turns the workflow into a readable research report. It clearly states PharmaGenie Research Dossier: glioblastoma, includes the research goal, and opens with an Executive Summary. That summary explains that the system generated an in silico drug discovery dossier, prioritized evidence backed hypotheses, and still requires human review and experimental follow up.",
+            screenshot="07-research-dossier-summary.png",
             accent=(100, 245, 210),
         ),
         Scene(
             title="Backend and deployability",
             subtitle="The backend is exposed through FastAPI and can be run locally or packaged for cloud deployment.",
-            bullets=[
-                "The FastAPI docs expose /health, /research, and /discover.",
-                "Secrets are loaded from environment variables.",
-                "Docker and docker-compose support repeatable execution.",
-                "The same service shape can be deployed to Cloud Run.",
-            ],
+            bullets=[],
             narration="The backend is built as a FastAPI service. The interactive docs expose the health, research, and discovery endpoints. API keys and configuration come from environment variables, not hard coded files. Docker and docker compose make the app repeatable locally, and the same pattern can be moved to Cloud Run for a hosted version.",
             screenshot="04-fastapi-docs.png",
             accent=(255, 205, 95),
