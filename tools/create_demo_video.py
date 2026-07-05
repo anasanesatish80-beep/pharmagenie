@@ -263,14 +263,14 @@ def generate_tts(text: str, output: Path) -> None:
         .replace("'", "&apos;")
     )
     ssml = f"""<speak version='1.0' xml:lang='en-US'>
-<voice gender='female'>
-<prosody rate='-7%' pitch='+2st'>{escaped}</prosody>
+<voice gender='male'>
+<prosody rate='-6%' pitch='-1st'>{escaped}</prosody>
 </voice>
 </speak>"""
     script = f"""
 Add-Type -AssemblyName System.Speech
 $synth = New-Object System.Speech.Synthesis.SpeechSynthesizer
-$synth.SelectVoice('Microsoft Zira Desktop')
+$synth.SelectVoice('Microsoft David Desktop')
 $synth.Rate = -1
 $synth.Volume = 100
 $synth.SetOutputToWaveFile('{output}')
